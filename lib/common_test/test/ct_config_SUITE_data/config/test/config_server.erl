@@ -69,7 +69,7 @@ loop(Iteration)->
 	    Pid ! ok;
 	{Pid, get_config}->
 	    {D,T} = erlang:localtime(),
-	    Config = 
+	    Config =
 		[{localtime, [{date, D}, {time, T}]},
 		 {node, erlang:node()},
 		 {config_server_iteration, Iteration},
