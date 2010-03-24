@@ -706,7 +706,7 @@ check_config_files(Configs)->
 			if
 			    is_integer(F)->
 				Callback:check_parameter(Files);
-			    is_list(F)->   
+			    is_list(F)->
 				lists:map(fun(File)->
 				    Callback:check_parameter(File)
 				end,
@@ -753,6 +753,7 @@ prepare_config_list(Args)->
     end,
     ConfigFiles ++ UserConfigs.
 
+% TODO: add logging of the loaded configuration file to the CT FW log!!!
 add_config(Callback, [])->
     read_config_files_int([{Callback, []}], fun store_config/3);
 add_config(Callback, [File|_Files]=Config) when is_list(File)->
