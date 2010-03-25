@@ -68,14 +68,10 @@ all(suite) ->
 	testspec_static,
 	testspec_dynamic
     ].
-   
 
 %%--------------------------------------------------------------------
 %% TEST CASES
 %%--------------------------------------------------------------------
-
-%%%-----------------------------------------------------------------
-%%%
 require(Config) when is_list(Config) ->
     DataDir = ?config(data_dir, Config),
     run_test(config_static_SUITE,
