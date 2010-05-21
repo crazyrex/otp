@@ -22,12 +22,13 @@
 -include("test_server.hrl").
 
 -export([all/1,init_per_testcase/2,fin_per_testcase/2,
+	 types/1,
 	 t_list_to_existing_atom/1,os_env/1,otp_7526/1,
 	 binary_to_atom/1,binary_to_existing_atom/1,
 	 atom_to_binary/1,min_max/1]).
 
 all(suite) ->
-    [t_list_to_existing_atom,os_env,otp_7526,
+    [types,t_list_to_existing_atom,os_env,otp_7526,
      atom_to_binary,binary_to_atom,binary_to_existing_atom,
      min_max].
 
@@ -38,6 +39,31 @@ init_per_testcase(Func, Config) when is_atom(Func), is_list(Config) ->
 fin_per_testcase(_Func, Config) ->
     Dog=?config(watchdog, Config),
     ?t:timetrap_cancel(Dog).
+
+types(Config) when is_list(Config) ->
+    c:l(erl_bif_types),
+    case erlang:function_exported(erl_bif_types, module_info, 0) of
+	false ->
+	    %% Fail cleanly.
+	    ?line ?t:fail("erl_bif_types not compiled");
+	true ->
+	    types_1()
+    end.
+
+types_1() ->
+    ?line Dir = filename:dirname(code:which(?MODULE)),
+    ?line ListFile = filename:join(Dir, "bifs.list"),
+    ?line {ok,List} = file:consult(ListFile),
+    case [MFA || MFA <- List, not known_types(MFA)] of
+	[] ->
+	    ok;
+	BadTypes ->
+	    io:format("~p\n", [BadTypes]),
+	    ?line ?t:fail({length(BadTypes),bifs_without_types})
+    end.
+
+known_types({M,F,A}) ->
+    erl_bif_types:is_known(M, F, A).
 
 t_list_to_existing_atom(Config) when is_list(Config) ->
     ?line all = list_to_existing_atom("all"),
