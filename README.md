@@ -1,4 +1,4 @@
-Erlang/OTP
+Erlang/OTP2
 ==========
 
 **Erlang** is a programming language used to build massively scalable soft
